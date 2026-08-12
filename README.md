@@ -220,4 +220,4 @@ Ce projet est à usage pédagogique / interne.
 
 ---
 
-*Développé pour le Supermarket ABIDI BENZARTI.*
+*Développé pour le Supermarket ABIDI AHMED.*
