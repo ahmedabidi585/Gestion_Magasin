@@ -7,6 +7,7 @@
 ## 📋 Table des matières
 
 - [Aperçu](#aperçu)
+- [Schéma électronique](#schéma-électronique)
 - [Fonctionnalités](#fonctionnalités)
 - [Architecture du projet](#architecture-du-projet)
 - [Prérequis](#prérequis)
@@ -22,6 +23,36 @@
 **Gestion Magasin** est une application Java Swing développée pour le **Supermarket ABIDI BENZARTI**. Elle permet de gérer l'ensemble des opérations d'un magasin : gestion du stock (entrées/sorties), bons de commande, bons d'achat, clients, fournisseurs et articles.
 
 L'application utilise une architecture **MVC (Modèle-Vue-Contrôleur)** avec accès à une base de données **MySQL** via le patron de conception **DAO (Data Access Object)**.
+
+---
+
+## 🔌 Schéma électronique
+
+Le projet intègre également un système de surveillance embarqué basé sur le microcontrôleur **STM32F401VE**, couplé à des capteurs et actionneurs pour le monitoring en temps réel du magasin.
+
+![Schéma électronique du système embarqué STM32](images/circuit_schema.png)
+
+### Composants du circuit
+
+| Composant | Référence | Rôle |
+|-----------|-----------|------|
+| 🧠 **Microcontrôleur** | STM32F401VE | Unité centrale de traitement |
+| 💨 **Capteur de gaz** | MQ-2 Gas Sensor | Détection de gaz / fumée |
+| 💧 **Capteur humidité** | HCH-1000 | Mesure du taux d'humidité |
+| 🌡️ **Capteur température** | DS1620 | Mesure de la température |
+| 🖥️ **Écran LCD** | LM016L (16×2) | Affichage des données en temps réel |
+| 🟢 **LED Verte** | D2 - LED-GREEN | Indicateur d'état normal |
+| 🔴 **LED Rouge** | D1 - LED-RED | Indicateur d'alarme |
+| 🔊 **Buzzer** | BUZ1 | Alarme sonore |
+| 💾 **Mémoire EEPROM** | FM24C64 (I²C) | Stockage des données de configuration |
+
+### Fonctionnement du système embarqué
+
+- Le **STM32F401VE** lit les données des capteurs (gaz, humidité, température) en temps réel
+- Les valeurs sont affichées sur l'**écran LCD 16×2**
+- En cas de détection d'anomalie (gaz, température anormale), la **LED rouge** s'allume et le **buzzer** se déclenche
+- En fonctionnement normal, la **LED verte** indique l'état sain du système
+- Les données critiques peuvent être sauvegardées dans la mémoire **FM24C64** via le bus I²C
 
 ---
 
@@ -86,6 +117,9 @@ Gestion_Magasin/
 │       ├── Affichage.java       # Affichage des données
 │       └── UiUtils.java         # Utilitaires UI communs
 │
+├── images/
+│   └── circuit_schema.png       # Schéma électronique STM32
+│
 ├── lib/
 │   └── mysql-connector-j-8.3.0.jar  # Driver JDBC MySQL
 │
@@ -110,7 +144,7 @@ Gestion_Magasin/
 ### 1. Cloner le dépôt
 
 ```bash
-git clone https://github.com/<votre-utilisateur>/Gestion_Magasin.git
+git clone https://github.com/ahmedabidi585/Gestion_Magasin.git
 cd Gestion_Magasin
 ```
 
@@ -211,6 +245,8 @@ CREATE TABLE user (
 | JDBC | — | Connectivité base de données |
 | MySQL Connector/J | 8.3.0 | Driver JDBC MySQL |
 | Eclipse IDE | — | Environnement de développement |
+| STM32F401VE | — | Microcontrôleur système embarqué |
+| MQ-2 | — | Capteur de gaz / fumée |
 
 ---
 
