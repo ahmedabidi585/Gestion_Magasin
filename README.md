@@ -1,4 +1,4 @@
-# 🏪 Gestion Magasin — Supermarket ABIDI BENZARTI
+# 🏪 Gestion Magasin — Supermarket ABIDI AHMED
 
 > Application de bureau Java (Swing) pour la gestion complète d'un magasin : stock, achats, ventes, clients, fournisseurs et utilisateurs.
 
@@ -220,4 +220,4 @@ Ce projet est à usage pédagogique / interne.
 
 ---
 
-*Développé pour le Supermarket ABIDI BENZARTI.*
+*Développé pour le Supermarket ABIDI AHMED.*
