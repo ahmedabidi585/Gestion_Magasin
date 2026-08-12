@@ -1,0 +1,81 @@
+# ===========================
+# Java compiled files
+# ===========================
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+*.zip
+*.tar.gz
+
+# ===========================
+# Eclipse IDE files
+# ===========================
+.metadata/
+.settings/
+.classpath
+.project
+*.launch
+*.factorypath
+.recommenders/
+bin/
+
+# ===========================
+# IntelliJ IDEA
+# ===========================
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+
+# ===========================
+# NetBeans
+# ===========================
+nbproject/private/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# ===========================
+# VS Code
+# ===========================
+.vscode/
+
+# ===========================
+# OS generated files
+# ===========================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ===========================
+# Build output
+# ===========================
+build/
+target/
+
+# ===========================
+# Logs
+# ===========================
+*.log
+
+# ===========================
+# Maven / Gradle
+# ===========================
+*.gradle
+.gradle/
+gradle-wrapper.jar
+
+# ===========================
+# Sensitive config (ne pas versionner)
+# ===========================
+config.properties
+database.properties

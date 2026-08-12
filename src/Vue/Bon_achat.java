@@ -1,0 +1,417 @@
+package Vue;
+
+import java.awt.Color;
+import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
+
+import Connexion.Singleton;
+import Modele.Article;
+import Modele.BonAchat;
+import Modele.Fournisseur;
+import Modele.LigneAchat;
+import Modele.DAO.ArticleImp;
+import Modele.DAO.BonAchatImp;
+import Modele.DAO.FournisseurImp;
+import Modele.DAO.LigneAchatImp;
+
+public class Bon_achat extends JFrame {
+
+	private static final long serialVersionUID = 1L;
+	private JPanel contentPane;
+	private JTextField idachat;
+	private JTextField dateachat;
+	private JTextField idfournisseur;
+	private JTable table;
+	private JTextField idarticle;
+	private JTextField quantite;
+	private JTable table_1;
+	private JTable table_2;
+
+	private final BonAchatImp bonAchatDao = new BonAchatImp();
+	private final LigneAchatImp ligneAchatDao = new LigneAchatImp();
+	private final ArticleImp articleDao = new ArticleImp();
+	private final FournisseurImp fournisseurDao = new FournisseurImp();
+	private final Connection connection = Singleton.getConnection();
+	private DefaultTableModel model;
+	private DefaultTableModel model1;
+	private DefaultTableModel model2;
+
+	public static void main(String[] args) {
+		EventQueue.invokeLater(() -> {
+			try {
+				Bon_achat frame = new Bon_achat();
+				frame.setVisible(true);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
+	}
+
+	public Bon_achat() {
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setBounds(100, 100, 970, 660);
+		contentPane = new JPanel();
+		contentPane.setBackground(UiUtils.BACKGROUND);
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+
+		JPanel panel = new JPanel();
+		panel.setBackground(UiUtils.PRIMARY);
+		panel.setForeground(new Color(64, 0, 110));
+		panel.setBounds(10, 10, 946, 73);
+		contentPane.add(panel);
+		panel.setLayout(null);
+
+		JLabel lblNewLabel = new JLabel("Bon Achat");
+		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel.setFont(new Font("Yu Gothic UI Semilight", Font.BOLD, 30));
+		lblNewLabel.setForeground(Color.WHITE);
+		lblNewLabel.setBounds(335, 10, 262, 37);
+		panel.add(lblNewLabel);
+
+		JPanel panel_1 = new JPanel();
+		panel_1.setBackground(UiUtils.PRIMARY);
+		panel_1.setBounds(10, 550, 946, 73);
+		contentPane.add(panel_1);
+
+		JPanel panel_2 = new JPanel();
+		panel_2.setBackground(UiUtils.PRIMARY);
+		panel_2.setBounds(10, 82, 10, 507);
+		contentPane.add(panel_2);
+
+		JPanel panel_3 = new JPanel();
+		panel_3.setBackground(UiUtils.PRIMARY);
+		panel_3.setBounds(946, 82, 10, 507);
+		contentPane.add(panel_3);
+		panel_1.setLayout(null);
+
+		JButton btnNewButton = new JButton("Menu Principale");
+		btnNewButton.addActionListener(e -> UiUtils.navigate(new ResponsableAchat(), Bon_achat.this));
+		btnNewButton.setBackground(Color.WHITE);
+		btnNewButton.setBounds(10, 27, 133, 21);
+		panel.add(btnNewButton);
+
+		JPanel panel_4 = new JPanel();
+		panel_4.setBackground(new Color(192, 192, 192));
+		panel_4.setBounds(48, 106, 350, 225);
+		contentPane.add(panel_4);
+		panel_4.setLayout(null);
+
+		idachat = new JTextField();
+		idachat.setBounds(160, 12, 134, 27);
+		panel_4.add(idachat);
+		idachat.setColumns(10);
+
+		dateachat = new JTextField();
+		dateachat.setColumns(10);
+		dateachat.setBounds(160, 79, 134, 27);
+		panel_4.add(dateachat);
+
+		idfournisseur = new JTextField();
+		idfournisseur.setColumns(10);
+		idfournisseur.setBounds(160, 147, 134, 27);
+		panel_4.add(idfournisseur);
+
+		JLabel lblNewLabel_1 = new JLabel("id achat :");
+		lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblNewLabel_1.setBounds(28, 10, 106, 27);
+		panel_4.add(lblNewLabel_1);
+
+		JLabel lblNewLabel_1_1 = new JLabel("date achat :");
+		lblNewLabel_1_1.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblNewLabel_1_1.setBounds(28, 77, 136, 27);
+		panel_4.add(lblNewLabel_1_1);
+
+		JLabel lblNewLabel_1_2 = new JLabel("id fournissuer :");
+		lblNewLabel_1_2.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblNewLabel_1_2.setBounds(28, 145, 122, 27);
+		panel_4.add(lblNewLabel_1_2);
+
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(445, 106, 462, 129);
+		contentPane.add(scrollPane);
+
+		table = new JTable();
+		table.setModel(new DefaultTableModel(new Object[][] {},
+				new String[] { "id achat ", "Date achat ", "id fournisseur" }));
+		table.getColumnModel().getColumn(1).setPreferredWidth(92);
+		table.getColumnModel().getColumn(1).setMinWidth(26);
+		scrollPane.setViewportView(table);
+		model = (DefaultTableModel) table.getModel();
+
+		table.getSelectionModel().addListSelectionListener(e -> {
+			if (!e.getValueIsAdjusting()) {
+				int i = table.getSelectedRow();
+				if (i >= 0) {
+					idachat.setText(String.valueOf(model.getValueAt(i, 0)));
+					dateachat.setText(String.valueOf(model.getValueAt(i, 1)));
+					idfournisseur.setText(String.valueOf(model.getValueAt(i, 2)));
+				}
+			}
+		});
+
+		JButton btnNewButton_1 = new JButton("Ajouter");
+		btnNewButton_1.setBackground(Color.WHITE);
+		btnNewButton_1.addActionListener(e -> ajouterBonAchat());
+		btnNewButton_1.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		btnNewButton_1.setBounds(170, 10, 121, 40);
+		panel_1.add(btnNewButton_1);
+
+		JButton btnNewButton_1_1 = new JButton("Supprimer");
+		btnNewButton_1_1.setBackground(Color.WHITE);
+		btnNewButton_1_1.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		btnNewButton_1_1.addActionListener(e -> supprimerBonAchat());
+		btnNewButton_1_1.setBounds(389, 10, 121, 40);
+		panel_1.add(btnNewButton_1_1);
+
+		JButton btnNewButton_1_2 = new JButton("Modifier");
+		btnNewButton_1_2.setBackground(Color.WHITE);
+		btnNewButton_1_2.addActionListener(e -> modifierBonAchat());
+		btnNewButton_1_2.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		btnNewButton_1_2.setBounds(607, 10, 116, 40);
+		panel_1.add(btnNewButton_1_2);
+
+		JPanel panel_5 = new JPanel();
+		panel_5.setBackground(new Color(192, 192, 192));
+		panel_5.setBounds(48, 351, 350, 171);
+		contentPane.add(panel_5);
+		panel_5.setLayout(null);
+
+		JLabel lblNewLabel_2 = new JLabel("Ajouter article a bon achat ");
+		lblNewLabel_2.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		lblNewLabel_2.setBounds(82, 10, 180, 13);
+		panel_5.add(lblNewLabel_2);
+
+		JLabel lblNewLabel_1_2_1 = new JLabel("id article");
+		lblNewLabel_1_2_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblNewLabel_1_2_1.setBounds(28, 33, 79, 27);
+		panel_5.add(lblNewLabel_1_2_1);
+
+		JLabel lblNewLabel_1_2_2 = new JLabel("Quantite");
+		lblNewLabel_1_2_2.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblNewLabel_1_2_2.setBounds(28, 80, 79, 27);
+		panel_5.add(lblNewLabel_1_2_2);
+
+		JButton btnNewButton_2 = new JButton("Ajouter article");
+		btnNewButton_2.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		btnNewButton_2.setBackground(Color.WHITE);
+		btnNewButton_2.setBounds(213, 140, 127, 21);
+		panel_5.add(btnNewButton_2);
+
+		JButton btnNewButton_3 = new JButton("Ligne Commande");
+		btnNewButton_3.addActionListener(e -> UiUtils.navigate(new Ligneachat(), Bon_achat.this));
+		btnNewButton_3.setBackground(Color.WHITE);
+		btnNewButton_3.setBounds(10, 140, 134, 21);
+		panel_5.add(btnNewButton_3);
+		btnNewButton_3.setFont(new Font("Tahoma", Font.PLAIN, 10));
+
+		idarticle = new JTextField();
+		idarticle.setBounds(160, 33, 127, 27);
+		panel_5.add(idarticle);
+		idarticle.setColumns(10);
+
+		quantite = new JTextField();
+		quantite.setColumns(10);
+		quantite.setBounds(160, 86, 127, 21);
+		panel_5.add(quantite);
+
+		JScrollPane scrollPane_1 = new JScrollPane();
+		scrollPane_1.setBounds(445, 245, 461, 120);
+		contentPane.add(scrollPane_1);
+
+		table_1 = new JTable();
+		table_1.setModel(new DefaultTableModel(new Object[][] {},
+				new String[] { "id article ", "nom", "prix_unit", "categorie", "quantite" }));
+		model1 = (DefaultTableModel) table_1.getModel();
+		scrollPane_1.setViewportView(table_1);
+
+		JScrollPane scrollPane_2 = new JScrollPane();
+		scrollPane_2.setBounds(445, 380, 462, 142);
+		contentPane.add(scrollPane_2);
+
+		table_2 = new JTable();
+		table_2.setModel(new DefaultTableModel(new Object[][] {},
+				new String[] { "id fournisseur", "nom", "prenom", "adresse", "matricule", "tel" }));
+		model2 = (DefaultTableModel) table_2.getModel();
+		scrollPane_2.setViewportView(table_2);
+
+		btnNewButton_2.addActionListener(e -> ajouterArticleAuBon());
+
+		chargerDonnees();
+		chargerDonnees();
+		setLocationRelativeTo(null);
+	}
+
+	private void chargerDonnees() {
+		model.setRowCount(0);
+		for (BonAchat b : bonAchatDao.getAllBonAchats()) {
+			model.addRow(new Object[] { b.getIdachat(), b.getDateachat(), b.getId_f() });
+		}
+
+		model1.setRowCount(0);
+		for (Article a : articleDao.getAllArticles()) {
+			model1.addRow(new Object[] { a.getIdart(), a.getNom(), a.getPrix_unit(), a.getCategorie(), a.getQte() });
+		}
+
+		model2.setRowCount(0);
+		for (Fournisseur f : fournisseurDao.getAllFournisseurs()) {
+			model2.addRow(new Object[] { f.getId(), f.getNom(), f.getPrenom(), f.getAdresse(), f.getMatricule(),
+					f.getTel() });
+		}
+	}
+
+	private void ajouterBonAchat() {
+		if (UiUtils.isBlank(idachat) || UiUtils.isBlank(dateachat) || UiUtils.isBlank(idfournisseur)) {
+			UiUtils.error(this, "Essayer de completer votre données");
+			return;
+		}
+		try {
+			int idacha = Integer.parseInt(idachat.getText().trim());
+			Date date = Date.valueOf(dateachat.getText().trim());
+			int idf = Integer.parseInt(idfournisseur.getText().trim());
+
+			if (bonAchatDao.getBonAchatById(idacha) != null) {
+				UiUtils.error(this, "id commande exist déja");
+				return;
+			}
+			if (fournisseurDao.getFournisseurById(idf) == null) {
+				UiUtils.error(this, "id fournisseur non exist");
+				return;
+			}
+
+			bonAchatDao.addBonAchat(new BonAchat(idacha, date, idf));
+			model.addRow(new Object[] { idacha, date, idf });
+			viderChampsBon();
+			UiUtils.success(this, "Ajout bon achat avec succes");
+		} catch (NumberFormatException e) {
+			UiUtils.error(this, "Verifier les données saisie");
+		} catch (IllegalArgumentException e) {
+			UiUtils.error(this, "Date invalide (format attendu: AAAA-MM-JJ)");
+		}
+	}
+
+	private void supprimerBonAchat() {
+		int i = table.getSelectedRow();
+		if (i < 0) {
+			UiUtils.error(this, "Pas de ligne selectionnée");
+			return;
+		}
+		int idacha = Integer.parseInt(String.valueOf(model.getValueAt(i, 0)));
+		bonAchatDao.deleteBonAchat(idacha);
+		model.removeRow(i);
+		viderChampsBon();
+		table.clearSelection();
+		UiUtils.success(this, "Suppression avec succes");
+	}
+
+	private void modifierBonAchat() {
+		int i = table.getSelectedRow();
+		if (i < 0) {
+			UiUtils.error(this, "Pas de ligne selectionnée");
+			return;
+		}
+		try {
+			int idacha = Integer.parseInt(idachat.getText().trim());
+			Date date = Date.valueOf(dateachat.getText().trim());
+			int idf = Integer.parseInt(idfournisseur.getText().trim());
+
+			if (bonAchatDao.getBonAchatById(idacha) == null || fournisseurDao.getFournisseurById(idf) == null) {
+				UiUtils.error(this, "Verifier les données saisie");
+				return;
+			}
+
+			bonAchatDao.updateBonAchat(idacha, date, idf);
+			model.setValueAt(idacha, i, 0);
+			model.setValueAt(date, i, 1);
+			model.setValueAt(idf, i, 2);
+
+			viderChampsBon();
+			table.clearSelection();
+			UiUtils.success(this, "Modification avec succes");
+		} catch (NumberFormatException e) {
+			UiUtils.error(this, "Verifier les données saisie");
+		} catch (IllegalArgumentException e) {
+			UiUtils.error(this, "Date invalide (format attendu: AAAA-MM-JJ)");
+		}
+	}
+
+	private void ajouterArticleAuBon() {
+		if (UiUtils.isBlank(idachat) || UiUtils.isBlank(idarticle) || UiUtils.isBlank(quantite)) {
+			UiUtils.error(this, "Completer de saisir votre donnees");
+			return;
+		}
+		try {
+			int idcom = Integer.parseInt(idachat.getText().trim());
+			int idart = Integer.parseInt(idarticle.getText().trim());
+			int qte = Integer.parseInt(quantite.getText().trim());
+
+			if (bonAchatDao.getBonAchatById(idcom) == null) {
+				UiUtils.error(this, "id achat non existe , ajouter un bon achat d'abord");
+				return;
+			}
+			if (articleDao.getArticleById(idart) == null) {
+				UiUtils.error(this, "identifiant de l'article non existe");
+				return;
+			}
+			if (ligneAchatExiste(idcom, idart)) {
+				UiUtils.error(this, "identifiant de la bon achat et l'article dans ligne achat deja exist");
+				return;
+			}
+
+			ligneAchatDao.addLigneAchat(new LigneAchat(idcom, idart, qte));
+			idarticle.setText("");
+			quantite.setText("");
+			UiUtils.success(this, "Ajout article dans ligne achat avec succes");
+		} catch (NumberFormatException e) {
+			UiUtils.error(this, "Verifier les données saisie");
+		}
+	}
+
+	private boolean ligneAchatExiste(int idcom, int idart) {
+		if (connection == null) {
+			return false;
+		}
+		try (PreparedStatement stmt = connection
+				.prepareStatement("select idachat from ligneachat where idachat = ? and idart = ?")) {
+			stmt.setInt(1, idcom);
+			stmt.setInt(2, idart);
+			try (ResultSet rs = stmt.executeQuery()) {
+				return rs.next();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	private void viderChampsBon() {
+		idachat.setText("");
+		dateachat.setText("");
+		idfournisseur.setText("");
+	}
+}
+
