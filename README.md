@@ -1,4 +1,4 @@
-# 🏪 Gestion Magasin — Supermarket ABIDI BENZARTI
+# 🏪 Gestion Magasin — Supermarket 
 
 > Application de bureau Java (Swing) pour la gestion complète d'un magasin : stock, achats, ventes, clients, fournisseurs et utilisateurs.
 
